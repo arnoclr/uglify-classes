@@ -1,8 +1,7 @@
 #! /usr/bin/env node
 
 const optionDefinitions = [
-    { name: 'src', type: String, defaultOption: true, defaultValue: '/dist' },
-    { name: 'output', type: String, defaultValue: '/dist' },
+    { name: 'src', type: String, defaultOption: true, defaultValue: 'dist/**/*' },
     { name: 'method', type: String, defaultValue: 'index' }, // hash:Int | random:Int
     { name: 'prefix', type: String, defaultValue: '' }, // classes to replace
     { name: 'suffix', type: String, defaultValue: '' },
@@ -10,12 +9,11 @@ const optionDefinitions = [
     { name: 'prepend', type: String, defaultValue: '_' }, // classes to prepend
 ];
 
-const commandLineArgs = require('command-line-args')
-const options = commandLineArgs(optionDefinitions)
-
-console.log(options);
+const commandLineArgs = require('command-line-args');
+const options = commandLineArgs(optionDefinitions);
 
 const fs = require('fs');
+const glob = require("glob");
 const crypto = require('crypto');
 const StringIdGenerator = require('../lib/stringIdGenerator');
 
@@ -34,39 +32,47 @@ function randomString(length) {
     return result;
 }
 
+function generateId(className) {
+    let id;
+    if (options.method == 'index') {
+        id = ids.next();
+    } else if (options.method.includes('random')) {
+        const length = options.method.split(':')[1];
+        id = randomString(length);
+        while (classesMap[id]) {
+            id = randomString(length);
+        }
+    } else if (options.method.includes('hash')) {
+        const length = options.method.split(':')[1];
+        id = crypto.createHash('sha256').update(className).digest('hex').substr(0, length);
+    }
+    return id;
+}
+
 function extractClasses(style) {
     identifiers = style.replace(/\{[\s\S]*?\}/g, '');
-    var classes = identifiers.match(new RegExp(`\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
+    var classes = identifiers.match(new RegExp(`\\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
+    if (!classes) return
     classes.forEach(cls => {
+        console.log(cls)
         // remove leading dot
         cls = cls.substr(1);
         if (!classesMap[cls]) {
-            let id;
-            if (options.method == 'index') {
-                id = ids.next();
-            } else if (options.method.includes('random')) {
-                const length = options.method.split(':')[1];
-                id = randomString(length);
-                while (classesMap[id]) {
-                    id = randomString(length);
-                }
-            } else if (options.method.includes('hash')) {
-                const length = options.method.split(':')[1];
-                id = crypto.createHash('sha256').update(cls).digest('hex').substr(0, length);
-            }
+            const id = generateId(cls);
             classesMap = {...classesMap, [cls]: options.prepend + id};
         };
     });
+    console.log(classesMap)
 }
 
-// read all css files in dist folder or style tag in html files
-fs.readdir('./dist/', (err, files) => {
+// read all css files in src folder or style tag in html files
+glob(options.src, (er, files) => {
     files.forEach(file => {
         if (file.indexOf('.css') > -1) {
-            var style = fs.readFileSync('./dist/' + file, 'utf8');
+            var style = fs.readFileSync(file, 'utf8');
             extractClasses(style);
         } else if (file.indexOf('.html') > -1) {
-            var content = fs.readFileSync('./dist/' + file, 'utf8');
+            var content = fs.readFileSync(file, 'utf8');
             var style = content.match(/<style>[\s\S]*?<\/style>/g);
             if (style) {
                 style = style[0];
@@ -110,10 +116,10 @@ function replaceDefault(content) {
     })
 }
 
-fs.readdir('./dist/', (err, files) => {
+glob(options.src, (er, files) => {
     files.forEach(file => {
         if (extensions.indexOf(file.split('.').pop()) > -1) {
-            var content = fs.readFileSync('./dist/' + file, 'utf8');
+            var content = fs.readFileSync(file, 'utf8');
             const ext = file.split('.').pop();
 
             if (ext === 'css') {
@@ -124,7 +130,7 @@ fs.readdir('./dist/', (err, files) => {
                 content = replaceDefault(content);
             }
 
-            fs.writeFileSync('./dist2/' + file, content);
+            fs.writeFileSync(file, content);
         }
     });
 });

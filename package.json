@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "command-line-args": "^5.2.0"
+    "command-line-args": "^5.2.0",
+    "glob": "^7.2.0"
   }
 }
