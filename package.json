@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "setup-dev": "npm link",
-    "build-demo": "cd test && copyfiles ./src/**/* ./dist && uglify-classes --method=random:4"
+    "build-demo": "cd test && copyfiles ./src/**/* ./dist && uglify-classes"
   },
   "bin": {
     "uglify-classes": "bin/main.js"
