@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup-dev": "npm link",
+    "build-demo": "cd test && copyfiles ./src/**/* ./dist && uglify-classes"
   },
   "bin": {
     "uglify-classes": "bin/main.js"
@@ -13,11 +14,22 @@
     "type": "git",
     "url": "https://github.com/arnoclr/uglify-classes.git"
   },
-  "keywords": ["css", "uglify", "minify", "compress", "minification", "minify-css", "optimization"],
-  "author": "",
+  "keywords": [
+    "css",
+    "uglify",
+    "minify",
+    "compress",
+    "minification",
+    "minify-css",
+    "optimization"
+  ],
+  "author": "Arno Cellarier",
   "license": "MIT",
   "dependencies": {
     "command-line-args": "^5.2.0",
     "glob": "^7.2.0"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
   }
 }
