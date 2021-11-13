@@ -13,7 +13,7 @@ You can choose between differents methods to generate minified versions of your 
 
 install it as dev dependencies :
 ```shell
-npm install @arnoclr/uglify-classes --save-dev
+npm install uglify-classes --save-dev
 ```
 
 Then, use it after a build (in your package.json) :
@@ -25,7 +25,7 @@ Then, use it after a build (in your package.json) :
 
 You can also use it without package.json by install it globally :
 ```shell
-npm install -g @arnoclr/uglify-classes
+npm install -g uglify-classes
 ```
 
 Then, use it in your terminal :
