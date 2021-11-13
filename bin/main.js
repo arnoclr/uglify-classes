@@ -69,8 +69,8 @@ function generateId(className) {
  * @param {string} style Css text
  */
 function extractClasses(style) {
-    identifiers = style.replace(/\{[\s\S]*?\}/g, '');
-    var classes = identifiers.match(new RegExp(`\\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
+    const identifiers = style.replace(/\{[\s\S]*?\}/g, '');
+    const classes = identifiers.match(new RegExp(`\\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
     if (!classes) return
     classes.forEach(cls => {
         // remove leading dot
@@ -88,10 +88,13 @@ function extractClasses(style) {
  * @param {string} content CSS content
  */
 function replaceCSS(content) {
-    // replace classes when have a bracket after
-    return content.replace(/\..+\{/g, (identifiers) => {
-        return replaceDefault(identifiers);
-    })
+    // separe identifiers
+    let res = [];
+    let parts = content.split(/[\{\}]/);
+    for (let i = 0; i < parts.length; i+=2) {
+        res.push(replaceDefault(parts[i]) + '{' + parts[i+1] + '}');
+    }
+    return res.join('');
 }
 
 /**
