@@ -58,7 +58,11 @@ function generateId(className) {
         }
     } else if (options.method.includes('hash')) {
         const length = options.method.split(':')[1];
-        id = crypto.createHash('sha256').update(className).digest('hex').substr(0, length);
+        id = crypto.createHash('sha256')
+                   .update(className)
+                   .digest('base64')
+                   .replace(/[^\w]/gm, '')
+                   .substr(0, length);
     }
     return id;
 }
