@@ -75,9 +75,9 @@ function extractClasses(style) {
     classes.forEach(cls => {
         // remove leading dot
         cls = cls.substr(1);
-        if (!classesMap[cls]) {
+        if (!classesMap[cls] && cls.startsWith(options.prefix) && cls.endsWith(options.suffix)) {
             const id = generateId(cls);
-            classesMap = {...classesMap, [cls]: options.prepend + id};
+            classesMap = {...classesMap, [cls]: options.prepend + id + options.append};
         };
     });
 }
