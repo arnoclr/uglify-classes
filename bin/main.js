@@ -73,16 +73,22 @@ function generateId(className) {
  * @param {string} style Css text
  */
 function extractClasses(style) {
-    const identifiers = style.replace(/\{[\s\S]*?\}/g, '');
-    const classes = identifiers.match(new RegExp(`\\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
-    if (!classes) return
-    classes.forEach(cls => {
-        // remove leading dot
-        cls = cls.substr(1);
-        if (!classesMap[cls] && cls.startsWith(options.prefix) && cls.endsWith(options.suffix)) {
-            const id = generateId(cls);
-            classesMap = {...classesMap, [cls]: options.prepend + id + options.append};
-        };
+    // remove comments
+    style = style.replace(/\/\*[\s\S]+?\*\//g, '');
+    // get seletors with classes
+    const classesGrp = style.match(/(\.\D[_A-Za-z0-9\-]+)[^}]*{/g);
+    if (!classesGrp) return
+    classesGrp.forEach(grp => {
+        // get individual classes
+        const classes = grp.match(new RegExp(`\\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
+        classes.forEach(cls => {
+            // remove leading dot
+            cls = cls.substr(1);
+            if (!classesMap[cls] && cls.startsWith(options.prefix) && cls.endsWith(options.suffix)) {
+                const id = generateId(cls);
+                classesMap = {...classesMap, [cls]: options.prepend + id + options.append};
+            };
+        });
     });
 }
 
@@ -92,13 +98,17 @@ function extractClasses(style) {
  * @param {string} content CSS content
  */
 function replaceCSS(content) {
-    // separe identifiers
-    let res = [];
-    let parts = content.split(/[\{\}]/);
-    for (let i = 0; i < parts.length; i+=2) {
-        res.push(replaceDefault(parts[i]) + '{' + parts[i+1] + '}');
-    }
-    return res.join('');
+    // remove comments
+    content = content.replace(/\/\*[\s\S]+?\*\//g, '');
+    // find media queries and keyframes and apply self function
+    content = content.replace(/(@[media|keyframes][^{]+)\{([\s\S]+?})\s*}/g, (atRule, g1, g2) => {
+        return `${g1}{${replaceCSS(g2)}}`;
+    });
+    // replace classnames
+    content = content.replace(/(\.[_A-Za-z0-9\-]+)[^}]*{/g, (global, g1) => {
+        return replaceDefault(g1) + '{';
+    });
+    return content;
 }
 
 /**

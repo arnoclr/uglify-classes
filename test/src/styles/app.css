@@ -2,6 +2,16 @@
     --primary: #0067b8;
 }
 
+@media screen and (min-width: 768px) {
+    :root {
+        --test: #0067b8;
+    }
+
+    .demo-class {
+        border: 1px solid var(--test);
+    }
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
