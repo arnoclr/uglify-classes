@@ -1,11 +1,11 @@
 {
   "name": "uglify-classes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "setup-dev": "npm link",
-    "build-demo": "cd test && copyfiles ./src/**/* ./dist && uglify-classes"
+    "build-demo": "cd test && copyfiles ./src/**/* ./dist && uglify-classes --method random:2"
   },
   "bin": {
     "uglify-classes": "bin/main.js"

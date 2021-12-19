@@ -31,10 +31,10 @@ const ids = new StringIdGenerator();
 function randomString(length) {
     var characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
     var result = ""
-    var chaactersLength = characters.length;
+    var charactersLength = characters.length;
 
-    for ( var i = 0; i < 5 ; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * chaactersLength));
+    for ( var i = 0; i < length ; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
 
     return result;
