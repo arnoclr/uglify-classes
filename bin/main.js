@@ -105,7 +105,7 @@ function replaceCSS(content) {
         return `${g1}{${replaceCSS(g2)}}`;
     });
     // replace classnames
-    content = content.replace(/(\.[_A-Za-z0-9\-]+)[^}]*{/g, (global, g1) => {
+    content = content.replace(/(\.[_A-Za-z0-9-:()]+)[^}]*{/g, (global, g1) => {
         return replaceDefault(g1) + '{';
     });
     return content;
