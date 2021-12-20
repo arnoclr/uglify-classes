@@ -12,6 +12,14 @@
     }
 }
 
+.slider,
+.slider__item {
+    display: flex;
+}
+.slider__item:first-child {
+    padding-left: var(--padding);
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
