@@ -122,10 +122,28 @@ function replaceHTML(content) {
     content = content.replace(/<style>[\s\S]*?<\/style>/g, (style) => {
         return '<style>' + replaceCSS(style) + '</style>';
     })
+    // replace script tag
+    content = content.replace(/<script>[\s\S]*?<\/script>/g, (script) => {
+        return '<script>' + replaceJS(script) + '</script>';
+    })
     // replace class attributes
     content = content.replace(/class="[ a-zA-Z0-9_-]+"/g, (classes) => {
         return replaceDefault(classes);
     })
+    return content;
+}
+
+/**
+ * Replace classes in JS strings
+ * 
+ * @param {string} content JS file content
+ * @returns {string} JS file content with replaced classes
+ */
+function replaceJS(content) {
+    // replace classes in strings
+    content = content.replace(/[`'"]\D[a-zA-Z0-9-_]+[`'"]/g, (classes) => {
+        return replaceDefault(classes);
+    });
     return content;
 }
 
@@ -173,6 +191,8 @@ glob(options.src, (er, files) => {
                 content = replaceCSS(content);
             } else if (ext === 'html') {
                 content = replaceHTML(content);
+            } else if (ext === 'js' || ext === 'mjs') {
+                content = replaceJS(content);
             } else if (extensions.indexOf(ext) > -1) {
                 content = replaceDefault(content);
             }
