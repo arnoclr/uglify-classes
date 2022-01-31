@@ -120,11 +120,11 @@ function replaceHTML(content) {
     // replace classes only in class attribute when have a leading space or quote or in style tag (reuse css function)
     // replace style tag
     content = content.replace(/<style>[\s\S]*?<\/style>/g, (style) => {
-        return '<style>' + replaceCSS(style) + '</style>';
+        return replaceCSS(style);
     })
     // replace script tag
     content = content.replace(/<script>[\s\S]*?<\/script>/g, (script) => {
-        return '<script>' + replaceJS(script) + '</script>';
+        return replaceJS(script);
     })
     // replace class attributes
     content = content.replace(/class="[ a-zA-Z0-9_-]+"/g, (classes) => {
