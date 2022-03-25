@@ -81,14 +81,16 @@ function extractClasses(style) {
     classesGrp.forEach(grp => {
         // get individual classes
         const classes = grp.match(new RegExp(`\\.${options.prefix}[a-zA-Z0-9_-]+${options.suffix}`, 'g'));
-        classes.forEach(cls => {
-            // remove leading dot
-            cls = cls.substr(1);
-            if (!classesMap[cls] && cls.startsWith(options.prefix) && cls.endsWith(options.suffix)) {
-                const id = generateId(cls);
-                classesMap = {...classesMap, [cls]: options.prepend + id + options.append};
-            };
-        });
+        if (classes) {
+            classes.forEach(cls => {
+                // remove leading dot
+                cls = cls.substr(1);
+                if (!classesMap[cls] && cls.startsWith(options.prefix) && cls.endsWith(options.suffix)) {
+                    const id = generateId(cls);
+                    classesMap = {...classesMap, [cls]: options.prepend + id + options.append};
+                };
+            });
+        }
     });
 }
 
