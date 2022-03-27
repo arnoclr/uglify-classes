@@ -1,6 +1,6 @@
 {
   "name": "uglify-classes",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "This package help you to minify your classnames to optimize size of your app. It's work with a simple CLI, and can be triggered after a build. You can save up to 30% space on CSS files and 20% on HTML files.",
   "main": "index.js",
   "scripts": {
